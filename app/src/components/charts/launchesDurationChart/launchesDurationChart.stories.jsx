@@ -20,7 +20,6 @@
  */
 
 import { storiesOf } from '@storybook/react';
-// import { action } from '@storybook/addon-actions';
 import { host } from 'storybook-host';
 import { withReadme } from 'storybook-readme';
 import 'c3/c3.css';
@@ -115,4 +114,4 @@ storiesOf('Components/Charts/LaunchesDurationChart', module)
   )
   .addDecorator(withReadme(README))
   .add('default state', () => <LaunchesDurationChart data={chartData} />)
-  .add('default state in preview mode', () => <LaunchesDurationChart data={chartData} isPreview />);
+  .add('preview mode', () => <LaunchesDurationChart data={chartData} isPreview />);

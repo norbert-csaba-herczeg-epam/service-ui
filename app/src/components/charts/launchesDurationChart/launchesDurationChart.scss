@@ -1,3 +1,8 @@
+:export {
+  colorBar: #557fd3;
+  colorFailed: $COLOR--failed;
+}
+
 .launches-duration-chart {
   :global {
     svg {
