@@ -101,6 +101,47 @@ const chartData = Object.freeze({
   },
 });
 
+const chartData2 = Object.freeze({
+  owner: 'just_an_owner',
+  share: true,
+  id: 'AAABBBCCCDDD',
+  name: 'LAUNCHES DURATION CHART#sm',
+  content_parameters: {
+    type: 'column_chart',
+    gadget: 'launches_duration_chart',
+    metadata_fields: ['name', 'number', 'start_time'],
+    content_fields: ['start_time', 'end_time', 'name', 'number', 'status'],
+    itemsCount: 50,
+  },
+  filter_id: 'a5f5s8s65d429747f9hjvj4',
+  content: {
+    result: [
+      {
+        values: {
+          duration: '4607',
+          start_time: '1538474734721',
+          end_time: '1538474739328',
+          status: 'STOPPED',
+        },
+        name: 'Demo Api Tests__ncst',
+        number: '6',
+        id: '5bb342ee0274390001975997',
+      },
+      {
+        values: {
+          duration: '1526',
+          start_time: '1538474726486',
+          end_time: '1538474728012',
+          status: 'FAILED',
+        },
+        name: 'Demo Api Tests__ncst',
+        number: '3',
+        id: '5bb342e60274390001974193',
+      },
+    ],
+  },
+});
+
 storiesOf('Components/Charts/LaunchesDurationChart', module)
   .addDecorator(
     host({
@@ -108,10 +149,16 @@ storiesOf('Components/Charts/LaunchesDurationChart', module)
       align: 'center middle',
       backdrop: 'rgba(70, 69, 71, 0.2)',
       background: '#ffffff',
-      height: 360,
+      height: 1060,
       width: 640,
     }),
   )
   .addDecorator(withReadme(README))
   .add('default state', () => <LaunchesDurationChart data={chartData} />)
-  .add('preview mode', () => <LaunchesDurationChart data={chartData} isPreview />);
+  .add('preview mode', () => <LaunchesDurationChart data={chartData} isPreview />)
+  .add('Multiple Charts from the same type', () => (
+    <div>
+      <LaunchesDurationChart data={chartData} />
+      <LaunchesDurationChart data={chartData2} />
+    </div>
+  ));

@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import d3 from 'd3';
 import { duration } from 'moment';
 
-import { isValueInterrupted, transformCategoryLabel, getLaunchAxisTicks } from '../chartUtils';
+import { isValueInterrupted, transformCategoryLabel, getLaunchAxisTicks } from './chartUtils';
 import styles from './launchesDurationChart.scss';
 import { prepareChartData } from './prepareChartData';
 import { DURATION } from './constants';
@@ -80,7 +80,7 @@ export const getInitialChartConfig = (data, isPreview = false) => {
     tooltip: {
       grouped: true,
       position: (d, width, height) => {
-        const el = document.querySelector(`.${cx('launches-duration-chart')}`);
+        const el = document.querySelector(`.${cx('launches-duration-chart')}:hover`);
         const position = d3.mouse(el);
         const left = position[0] - width / 2;
         const top = position[1] - height;
