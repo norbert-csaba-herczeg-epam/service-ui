@@ -6,11 +6,9 @@ import { isValueInterrupted, transformCategoryLabel, getLaunchAxisTicks } from '
 import styles from './launchesDurationChart.scss';
 import { prepareChartData } from './prepareChartData';
 import { DURATION } from './constants';
+import { COLOR_CHART_DURATION, COLOR_FAILED } from '../../../common/constants/colors';
 
 const cx = classNames.bind(styles);
-
-const barColor = styles.colorBar;
-const interruptedColor = styles.colorFailed;
 
 export const getInitialChartConfig = (data, isPreview = false) => {
   const { timeType, chartData, itemData } = prepareChartData(data);
@@ -20,12 +18,12 @@ export const getInitialChartConfig = (data, isPreview = false) => {
       columns: [chartData],
       type: 'bar',
       colors: {
-        [DURATION]: barColor,
+        [DURATION]: COLOR_CHART_DURATION,
       },
       groups: [[DURATION]],
       color: (color, d) => {
         if (itemData[d.index] && isValueInterrupted(itemData[d.index])) {
-          return interruptedColor;
+          return COLOR_FAILED;
         }
         return color;
       },
