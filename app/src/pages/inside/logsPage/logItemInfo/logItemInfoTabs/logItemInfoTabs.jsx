@@ -44,11 +44,7 @@ const makeTabs = ({ formatMessage }, logItem) => [
     id: 'attachments',
     label: formatMessage(messages.attachmentsTab),
     icon: AttachmentIcon,
-    content: (
-      <div>
-        <Attachments logItem={logItem} />
-      </div>
-    ),
+    content: <Attachments />,
   },
   {
     id: 'details',

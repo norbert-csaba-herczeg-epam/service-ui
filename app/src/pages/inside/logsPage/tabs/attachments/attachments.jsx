@@ -4,37 +4,31 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import { Carousel } from 'react-responsive-carousel';
 import { connect } from 'react-redux';
-import { getIcon } from 'common/img/launch/attachments';
 import { attachmentsSelector } from 'controllers/attachments';
 import 'react-responsive-carousel/lib/styles/carousel.css';
+
 import styles from './attachments.scss';
 
 const cx = classNames.bind(styles);
 
 @connect((state) => ({
-  logItems: attachmentsSelector(state),
+  attachments: attachmentsSelector(state),
 }))
 export default class Attachments extends React.Component {
   static defaultProps = {
-    // TODO: throw actions instead and
-    onClickItem: (selectedItem) => console.log('onclick', selectedItem),
+    onClickItem: () => {},
   };
   static propTypes = {
     onClickItem: PropTypes.func,
-    logItems: PropTypes.array.isRequired,
+    attachments: PropTypes.array.isRequired,
   };
 
   state = {
-    attachments: (this.props.logItems || []).map((attachment) => ({
-      id: attachment.id,
-      src: getIcon(attachment.content_type),
-      alt: attachment.content_type,
-    })),
     mainAreaVisible: false,
   };
 
   onClickItem(itemIndex) {
-    const selectedItem = this.state.attachments[itemIndex];
+    const selectedItem = this.props.attachments[itemIndex];
     this.props.onClickItem(selectedItem);
   }
 
@@ -59,7 +53,7 @@ export default class Attachments extends React.Component {
         onClickThumb={() => this.onClickThumb()}
         onClickItem={(itemIndex) => this.onClickItem(itemIndex)}
       >
-        {this.state.attachments.map((attachment) => (
+        {this.props.attachments.map((attachment) => (
           <div key={attachment.id} className={cx({ preview: true })}>
             <img className={cx({ preview: true })} src={attachment.src} alt={attachment.alt} />
           </div>
