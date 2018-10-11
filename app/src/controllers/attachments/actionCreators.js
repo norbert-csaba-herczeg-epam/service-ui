@@ -1,6 +1,7 @@
-import { GET_LOG_ITEM_ATTACHMENT } from './constants';
 import { URLS } from '../../common/urls';
+import { fetch } from '../../common/utils';
 import { showModalAction } from '../../controllers/modal';
+import { GET_LOG_ITEM_ATTACHMENT } from './constants';
 
 export const getLogItemAttachmentAction = (attachment) => ({
   type: GET_LOG_ITEM_ATTACHMENT,
@@ -21,16 +22,13 @@ export const openFileModal = ({ id, data }) => (dispatch) => {
       );
       break;
     case 'attachmentHarFileModal':
-      fetch(URLS.getFileById(projectId, binaryId)).then(({ data: harData }) => {
+      fetch(URLS.getFileById(projectId, binaryId)).then((harData) => {
         dispatch(showModalAction({ id, data: { harData } }));
       });
       break;
     default:
-      fetch(URLS.getFileById(projectId, binaryId), {
-        headers: {
-          Accept: 'text/plain, */*; q=0.01',
-        },
-      }).then(({ data: content }) => {
+      fetch(URLS.getFileById(projectId, binaryId)).then((jsonContent) => {
+        const content = jsonContent ? JSON.stringify(jsonContent) : jsonContent;
         dispatch(showModalAction({ id, data: { language, content } }));
       });
   }
