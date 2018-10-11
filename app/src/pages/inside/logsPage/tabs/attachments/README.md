@@ -10,7 +10,10 @@ In our case, the main area is not displayed initially, with a little css it is n
 
 ## Input props
 
-The componenct receives `logItems` which is an array of logItems in the following
+- **attachments**: _array_, required
+- **onClickItem**: _function_, optional
+
+The componenct receives `attachments` which is an array of attachments in the following
 format:
 
 ```

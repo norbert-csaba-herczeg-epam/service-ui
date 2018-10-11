@@ -29,6 +29,7 @@ storiesOf('Pages/Inside/LogsPage/Attachment', module)
       align: 'center middle',
       backdrop: 'rgba(70, 69, 71, 0.2)',
       background: '#f5f5f5',
+      width: 680,
       height: 'auto',
     }),
   )

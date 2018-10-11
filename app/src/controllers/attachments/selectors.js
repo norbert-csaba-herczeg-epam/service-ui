@@ -10,6 +10,7 @@ export const attachmentsSelector = (state) => {
         id: attachment.id,
         src: getIcon(attachment.content_type),
         alt: attachment.content_type,
+        attachment,
       }));
   }
   return contents;

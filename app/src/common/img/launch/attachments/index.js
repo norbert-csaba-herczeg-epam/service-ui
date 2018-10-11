@@ -9,13 +9,14 @@ import html from 'common/img/launch/attachments/html.svg';
 import pic from 'common/img/launch/attachments/pic.svg';
 import txt from 'common/img/launch/attachments/txt.svg';
 import archive from 'common/img/launch/attachments/archive.svg';
-import attachment from 'common/img/launch/attachments/attachment.png';
+import attachment from 'common/img/launch/attachments/attachment.svg';
 
 const zip = archive;
 const rar = archive;
 const tgz = archive;
 const tar = archive;
 const gzip = archive;
+const plain = txt;
 
 export const EXTENSION_MAP = {
   xml,
@@ -35,6 +36,7 @@ export const EXTENSION_MAP = {
   tar,
   gzip,
   attachment,
+  plain,
 };
 
 const extractExtension = (contentType) => (contentType && contentType.split('/')[1]) || '';

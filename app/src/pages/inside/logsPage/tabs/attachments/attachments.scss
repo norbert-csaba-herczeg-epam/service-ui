@@ -1,11 +1,18 @@
+.attachments-wrap {
+  width: 100%;
+  text-align: center;
+}
+
 .logAttachments {
-  width: 630px;
+  margin: 0 auto;
+  width: 80%;
   &.hideMainArea :global .carousel-slider {
     display: none;
   }
 
   div.preview {
     line-height: 365px;
+    cursor: pointer;
   }
   img.preview {
     vertical-align: middle;
@@ -18,6 +25,10 @@
       }
       .control-next.control-arrow:before {
         border-left: 8px solid $COLOR--gray-60;
+      }
+
+      .thumbs {
+        line-height: 50px;
       }
     }
     .carousel-slider {
