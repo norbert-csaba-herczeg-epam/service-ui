@@ -1,5 +1,4 @@
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import { host } from 'storybook-host';
 import { withReadme } from 'storybook-readme';
 // eslint-disable-next-line import/extensions, import/no-unresolved
@@ -36,11 +35,11 @@ storiesOf('Pages/Inside/LogsPage/Attachment', module)
   .addDecorator(withReadme(README))
   .add('With all icon types', () => (
     <WithState state={{ log: { logItems: MOCK_DATA.all } }}>
-      <Attachments onClickItem={action('onClickItem')} />
+      <Attachments />
     </WithState>
   ))
   .add('With mock data', () => (
     <WithState state={{ log: { logItems: MOCK_DATA.fakes } }}>
-      <Attachments onClickItem={action('onClickItem')} />
+      <Attachments />
     </WithState>
   ));

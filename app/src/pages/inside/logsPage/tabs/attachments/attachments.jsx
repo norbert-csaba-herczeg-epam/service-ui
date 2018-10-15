@@ -6,10 +6,14 @@ import { Carousel } from 'react-responsive-carousel';
 import { connect } from 'react-redux';
 import { attachmentsSelector } from 'controllers/attachments';
 import 'react-responsive-carousel/lib/styles/carousel.css';
-
 import { activeProjectSelector } from 'controllers/user';
-import { openFileModal } from 'controllers/attachments/actionCreators';
 import { URLS } from 'common/urls';
+import {
+  GET_ATTACHMENT_IMAGE,
+  GET_ATTACHMENT_HAR,
+  GET_ATTACHMENT_BINARY,
+} from 'controllers/attachments/constants';
+
 import styles from './attachments.scss';
 
 const cx = classNames.bind(styles);
@@ -21,26 +25,32 @@ const getModalId = (isImage, language) => {
     return 'attachmentHarFileModal';
   }
   return 'attachmentCodeModal';
-}
+};
 
 @connect(
   (state) => ({
     attachments: attachmentsSelector(state),
     projectId: activeProjectSelector(state),
   }),
-  {
-    openFileModal,
-  },
+  (dispatch) => ({
+    openImageModal: (data) => dispatch({ type: GET_ATTACHMENT_IMAGE, data }),
+    openHarModal: (data) => dispatch({ type: GET_ATTACHMENT_HAR, data }),
+    openBinaryModal: (data) => dispatch({ type: GET_ATTACHMENT_BINARY, data }),
+  }),
 )
 export default class Attachments extends React.Component {
   static defaultProps = {
-    openFileModal: () => {},
+    openImageModal: () => {},
+    openHarModal: () => {},
+    openBinaryModal: () => {},
   };
 
   static propTypes = {
     attachments: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
-    openFileModal: PropTypes.func,
+    openImageModal: PropTypes.func,
+    openHarModal: PropTypes.func,
+    openBinaryModal: PropTypes.func,
   };
 
   state = {
@@ -58,10 +68,17 @@ export default class Attachments extends React.Component {
     const modalId = getModalId(isImage, language);
 
     if (isValidForModal) {
-      this.props.openFileModal({
-        id: modalId,
-        data: { projectId, binaryId, language },
-      });
+      const data = { projectId, binaryId, language };
+      switch (modalId) {
+        case 'attachmentImageModal':
+          this.props.openImageModal(data);
+          break;
+        case 'attachmentHarFileModal':
+          this.props.openHarModal(data);
+          break;
+        default:
+          this.props.openBinaryModal(data);
+      }
     } else {
       window.open(URLS.getFileById(projectId, binaryId));
     }
