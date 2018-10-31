@@ -6,18 +6,24 @@ import ReactDOMServer from 'react-dom/server';
 import { redirect } from 'redux-first-router';
 import classNames from 'classnames/bind';
 import { C3Chart } from 'components/widgets/charts/common/c3chart';
-import { chartConfigs } from 'common/constants/chartConfigs';
-import { defectLinkSelector, statisticsLinkSelector } from 'controllers/testItem';
-import { TEST_ITEM_PAGE } from 'controllers/pages';
+import { PROJECT_LAUNCHES_PAGE } from 'controllers/pages';
 import { activeProjectSelector } from 'controllers/user';
+import { createFilterAction, updateFilterEntitiesAction } from 'controllers/filter';
+import {
+  CONDITION_CNT,
+  CONDITION_HAS,
+  ENTITY_NAME,
+  ENTITY_TAGS,
+} from 'components/filterEntities/constants';
 
 import styles from './cumulativeTrendChart.scss';
 import { CumulativeTrendTooltip } from './tooltip';
-import { generateChartDataParams, generateChartColors } from './generateConfig';
+import { generateChartDataParams, generateChartColors, getColorForKey } from './generateConfig';
 
 const cx = classNames.bind(styles);
 
-// TODO: Possibly redundantmessage definition? See legend.jsx, launchesComparisonChart.jsx
+const TAG_NAVIGATION_FILTER_ID = '-1';
+
 const messages = defineMessages({
   statistics$executions$total: {
     id: 'FilterNameById.statistics$executions$total',
@@ -65,11 +71,11 @@ const messages = defineMessages({
 @connect(
   (state) => ({
     project: activeProjectSelector(state),
-    getDefectLink: (params) => defectLinkSelector(state, params),
-    getStatisticsLink: (name) => statisticsLinkSelector(state, { statuses: [name] }),
   }),
   {
     redirect,
+    createFilter: createFilterAction,
+    updateFilterEntities: updateFilterEntitiesAction,
   },
 )
 export class CumulativeTrendChart extends Component {
@@ -82,13 +88,15 @@ export class CumulativeTrendChart extends Component {
     observer: PropTypes.object.isRequired,
     project: PropTypes.string.isRequired,
     redirect: PropTypes.func.isRequired,
-    getDefectLink: PropTypes.func.isRequired,
-    getStatisticsLink: PropTypes.func.isRequired,
+    createFilter: PropTypes.func,
+    updateFilterEntities: PropTypes.func,
   };
 
   static defaultProps = {
     preview: false,
     height: 0,
+    createFilter: () => {},
+    updateFilterEntities: () => {},
   };
 
   state = {
@@ -119,16 +127,31 @@ export class CumulativeTrendChart extends Component {
   };
 
   onChartClick = (d) => {
-    const { widget, getDefectLink, getStatisticsLink } = this.props;
-    const name = d.id.split('$')[2];
-    const id = widget.content.result[d.index].id;
-    const defaultParams = this.getDefaultLinkParams(id);
-    const defectLocator = chartConfigs.defectLocators[name];
-    const link = defectLocator
-      ? getDefectLink({ defects: [defectLocator], itemId: id })
-      : getStatisticsLink(name);
+    const { project, widget, createFilter, updateFilterEntities } = this.props;
+    const tagName = Object.keys(widget.content.result)[d.index];
 
-    this.props.redirect(Object.assign(link, defaultParams));
+    // TODO: continue with click handler, logic below may not be thebest solution, possibly need a dedicated saga for navigation!
+    // createFilter();
+    // updateFilterEntities(TAG_NAVIGATION_FILTER_ID, [
+    //   {
+    //     value: tagName,
+    //     condition: CONDITION_HAS,
+    //     filtering_field: ENTITY_TAGS,
+    //   },
+    //   {
+    //     value: '',
+    //     condition: CONDITION_CNT,
+    //     filtering_field: ENTITY_NAME,
+    //   },
+    // ]);
+
+    // this.props.redirect({
+    //   type: PROJECT_LAUNCHES_PAGE,
+    //   payload: {
+    //     projectId: project,
+    //     filterId: TAG_NAVIGATION_FILTER_ID,
+    //   },
+    // });
   };
 
   getConfig = () => {
@@ -157,7 +180,7 @@ export class CumulativeTrendChart extends Component {
           show: !preview,
           type: 'category',
           categories: this.dataGroupNames.map((category) => {
-            const prefix = widget.content_parameters.widgetOptions.prefix[0];
+            const prefix = widget.content_parameters.widgetOptions.prefix;
             return category.indexOf(prefix) > -1 ? category.split(`${prefix}:`)[1] : category;
           }),
           tick: {
@@ -209,15 +232,6 @@ export class CumulativeTrendChart extends Component {
     };
   };
 
-  getDefaultLinkParams = (testItemIds) => ({
-    payload: {
-      projectId: this.props.project,
-      filterId: 'all',
-      testItemIds,
-    },
-    type: TEST_ITEM_PAGE,
-  });
-
   getCoords = ({ pageX, pageY }) => {
     this.x = pageX;
     this.y = pageY;
@@ -238,14 +252,15 @@ export class CumulativeTrendChart extends Component {
     }
   };
 
-  renderContents = (d, defaultTitleFormat, defaultValueFormat, color) => {
+  renderContents = (d) => {
     const groupName = this.dataGroupNames[d[0].index];
     const itemsData = [];
     d.forEach((item) => {
+      const messageKey = item.name.substr(0, item.name.lastIndexOf('$'));
       itemsData.push({
         id: item.id,
-        color: color(item.id),
-        name: this.props.intl.formatMessage(messages[item.name.split('$total')[0]]),
+        color: getColorForKey(item.id),
+        name: this.props.intl.formatMessage(messages[messageKey]),
         value: item.value,
       });
     });
